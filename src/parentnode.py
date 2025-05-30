@@ -1,4 +1,4 @@
-from .htmlnode import HTMLNode
+from htmlnode import HTMLNode
 
 
 class ParentNode(HTMLNode):
@@ -10,7 +10,7 @@ class ParentNode(HTMLNode):
     def to_html(self):
         if not self.tag:
             raise ValueError("No tag")
-        elif not self.children:
+        elif self.children == None or len(self.children) == 0:
             raise ValueError("No children")
         else:
-            pass
+            return f"<{self.tag}>{''.join(child.to_html() for child in self.children)}</{self.tag}>"
