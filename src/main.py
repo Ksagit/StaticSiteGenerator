@@ -29,7 +29,7 @@ def main():
     print("Starting static site generation...")
 
     static_dir = "./static"
-    public_dir = "./docs"
+    public_dir = "./public"
     content_dir = "./content"
     template_file = "./template.html"
 
