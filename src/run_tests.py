@@ -11,6 +11,7 @@ import src.tests.test_leafnode
 import src.tests.test_parentnode
 import src.tests.test_textnode
 import src.tests.test_utils
+import src.tests.test_markdown
 
 def run_all_tests():
     loader = unittest.TestLoader()
@@ -23,6 +24,7 @@ def run_all_tests():
     suite.addTests(loader.loadTestsFromModule(src.tests.test_parentnode))
     suite.addTests(loader.loadTestsFromModule(src.tests.test_textnode))
     suite.addTests(loader.loadTestsFromModule(src.tests.test_utils))
+    suite.addTests(loader.loadTestsFromModule(src.tests.test_markdown))
 
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
