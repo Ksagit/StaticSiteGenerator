@@ -1,5 +1,5 @@
 import unittest
-from utils import extract_markdown_images, extract_markdown_links
+from node_processing import extract_markdown_images, extract_markdown_links
 
 
 class TestMarkdownExtraction(unittest.TestCase):
