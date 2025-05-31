@@ -65,10 +65,10 @@ class TestSplitNodesDelimiter(unittest.TestCase):
 
     def test_odd_delimiter_number_raises_exception(self):
         node = TextNode("This is a **bold text.", TextType.TEXT)
-        with self.assertRaises(Exception) as cm:
+        with self.assertRaises(ValueError) as cm:
             split_nodes_delimiter([node], "**", TextType.BOLD)
-        self.assertEqual(str(cm.exception), "Odd delimiter number")
-
+        self.assertEqual(str(cm.exception), "Invalid Markdown: Mismatched delimiter **")
+    
     def test_mixed_nodes_input(self):
         node1 = TextNode("Normal text.", TextType.TEXT)
         node2 = TextNode("`code` snippet.", TextType.CODE)
@@ -209,7 +209,6 @@ class TestSplitNodes(unittest.TestCase):
         nodes_with_image_and_link_text = [
             TextNode("An image ![img](i.png) and a link [link](l.html).", TextType.TEXT)
         ]
-        # split_nodes_link should ignore the image part
         expected_link_only_from_mixed = [
             TextNode("An image ![img](i.png) and a link ", TextType.TEXT),
             TextNode("link", TextType.LINK, "l.html"),
@@ -284,7 +283,6 @@ class TestTextToTextNodes(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             split_nodes_delimiter(nodes, "**", TextType.BOLD)
         self.assertEqual(str(cm.exception), "Invalid Markdown: Mismatched delimiter **")
-    
 
 if __name__ == "__main__":
     unittest.main()
