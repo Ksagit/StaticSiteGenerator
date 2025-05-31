@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 from page_generator import generate_pages_recursive
 
 
@@ -28,23 +29,29 @@ def main():
     print("Starting static site generation...")
 
     static_dir = "./static"
-    public_dir = "./public"
+    public_dir = "./docs"
     content_dir = "./content"
     template_file = "./template.html"
+
+    basepath = "/"
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+        if basepath and not basepath.endswith('/'):
+            basepath += '/'
+    
+    print(f"Using basepath: {basepath}")
 
     copy_static_assets(static_dir, public_dir)
 
     if not os.path.exists(content_dir):
         print(f"Error: Content directory not found at {content_dir}")
-        print("Please ensure you have a 'content' directory in your project root with Markdown files.")
         return
     
     if not os.path.exists(template_file):
         print(f"Error: Template file not found at {template_file}")
-        print("Please ensure you have a 'template.html' file in your project root.")
         return
 
-    generate_pages_recursive(content_dir, template_file, public_dir)
+    generate_pages_recursive(content_dir, template_file, public_dir, basepath)
 
     print("Static site generation complete.")
 
