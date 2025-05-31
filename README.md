@@ -1,2 +1,2 @@
 # Static Site Generator
-This is a static site generator built using Python.
+A static site generator built in Python.
