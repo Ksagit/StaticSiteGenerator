@@ -102,3 +102,14 @@ def markdown_to_html_node(markdown):
             raise ValueError(f"Unknown block type: {block_type}")
 
     return ParentNode("div", root_children)
+
+def extract_title(markdown):
+    lines = markdown.split('\n')
+    for line in lines:
+        stripped_line = line.strip()
+        if stripped_line.startswith("# "):
+            title = stripped_line[2:].strip()
+            if not title:
+                raise ValueError("Markdown has an empty H1 heading.")
+            return title
+    raise ValueError("Markdown has no H1 heading.")

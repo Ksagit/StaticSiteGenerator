@@ -1,13 +1,14 @@
 from htmlnode import HTMLNode
 
-
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, props=props)
+        if self.value is None and self.tag is not None:
+             raise ValueError("LeafNode with a tag must have a non-None value")
 
     def to_html(self):
-        if not self.value:
-            raise ValueError
+        if self.value is None:
+            raise ValueError("LeafNode value cannot be None for rendering.")
         elif not self.tag:
             return self.value
         else:
