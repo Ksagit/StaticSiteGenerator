@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from utils import split_nodes_delimiter, split_nodes_image, split_nodes_link
+from utils import split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -233,6 +233,58 @@ class TestSplitNodes(unittest.TestCase):
         self.assertEqual(
             split_nodes_link(nodes_mixed_types_link), expected_mixed_types_link
         )
+
+class TestTextToTextNodes(unittest.TestCase):
+    def test_single_delimiter_middle(self):
+        nodes = [TextNode("This is **bold** text", TextType.TEXT)]
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" text", TextType.TEXT),
+        ]
+        self.assertEqual(split_nodes_delimiter(nodes, "**", TextType.BOLD), expected)
+
+    def test_delimiter_at_start(self):
+        nodes = [TextNode("**Bold** text starts here", TextType.TEXT)]
+        expected = [
+            TextNode("Bold", TextType.BOLD),
+            TextNode(" text starts here", TextType.TEXT),
+        ]
+        self.assertEqual(split_nodes_delimiter(nodes, "**", TextType.BOLD), expected)
+
+    def test_delimiter_at_end(self):
+        nodes = [TextNode("Text ends with *italic*", TextType.TEXT)]
+        expected = [
+            TextNode("Text ends with ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+        ]
+        self.assertEqual(split_nodes_delimiter(nodes, "*", TextType.ITALIC), expected)
+
+    def test_multiple_delimiters(self):
+        nodes = [TextNode("This is `code` and `more code`", TextType.TEXT)]
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("more code", TextType.CODE),
+        ]
+        self.assertEqual(split_nodes_delimiter(nodes, "`", TextType.CODE), expected)
+
+    def test_empty_content_delimiter(self):
+        nodes = [TextNode("Text with **** empty bold", TextType.TEXT)]
+        expected = [
+            TextNode("Text with ", TextType.TEXT),
+            TextNode("", TextType.BOLD),
+            TextNode(" empty bold", TextType.TEXT),
+        ]
+        self.assertEqual(split_nodes_delimiter(nodes, "**", TextType.BOLD), expected)
+
+    def test_unmatched_delimiter_raises_error(self):
+        nodes = [TextNode("This is **unclosed bold", TextType.TEXT)]
+        with self.assertRaises(ValueError) as cm:
+            split_nodes_delimiter(nodes, "**", TextType.BOLD)
+        self.assertEqual(str(cm.exception), "Invalid Markdown: Mismatched delimiter **")
+    
 
 if __name__ == "__main__":
     unittest.main()
