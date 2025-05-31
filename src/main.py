@@ -1,6 +1,6 @@
 import os
 import shutil
-from page_generator import generate_page
+from page_generator import generate_pages_recursive
 
 
 def copy_static_assets(source_dir, dest_dir):
@@ -34,12 +34,9 @@ def main():
 
     copy_static_assets(static_dir, public_dir)
 
-    markdown_file_path = os.path.join(content_dir, "index.md")
-    output_html_path = os.path.join(public_dir, "index.html")
-
-    if not os.path.exists(markdown_file_path):
-        print(f"Error: Markdown file not found at {markdown_file_path}")
-        print("Please ensure you have a 'content/index.md' file in your project root.")
+    if not os.path.exists(content_dir):
+        print(f"Error: Content directory not found at {content_dir}")
+        print("Please ensure you have a 'content' directory in your project root with Markdown files.")
         return
     
     if not os.path.exists(template_file):
@@ -47,7 +44,7 @@ def main():
         print("Please ensure you have a 'template.html' file in your project root.")
         return
 
-    generate_page(markdown_file_path, template_file, output_html_path)
+    generate_pages_recursive(content_dir, template_file, public_dir)
 
     print("Static site generation complete.")
 

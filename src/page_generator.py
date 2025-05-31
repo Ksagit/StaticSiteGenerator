@@ -24,3 +24,27 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(dest_path, 'w') as f:
         f.write(final_html)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    print(f"Recursively generating pages from {dir_path_content} to {dest_dir_path}")
+
+    if not os.path.exists(dir_path_content):
+        raise FileNotFoundError(f"Content directory not found: {dir_path_content}")
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Template file not found: {template_path}")
+
+    os.makedirs(dest_dir_path, exist_ok=True)
+
+    for item in os.listdir(dir_path_content):
+        item_path = os.path.join(dir_path_content, item)
+        
+        if os.path.isfile(item_path):
+            if item.endswith(".md"):
+                file_name_html = item.replace(".md", ".html")
+                dest_file_path = os.path.join(dest_dir_path, file_name_html)
+                generate_page(item_path, template_path, dest_file_path)
+            else:
+                print(f"  Skipping non-markdown file: {item_path}")
+        elif os.path.isdir(item_path):
+            new_dest_dir_path = os.path.join(dest_dir_path, item)
+            generate_pages_recursive(item_path, template_path, new_dest_dir_path)
